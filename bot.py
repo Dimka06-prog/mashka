@@ -38,7 +38,7 @@ async def error_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         )
 
 
-async def main() -> None:
+def main() -> None:
     """Главная функция запуска бота."""
     try:
         # Загрузка конфигурации
@@ -63,9 +63,7 @@ async def main() -> None:
         logger.info(f"Webhook URL: {webhook_url}")
         
         # Запуск приложения в webhook режиме
-        await application.initialize()
-        await application.start()
-        await application.updater.start_webhook(
+        application.run_webhook(
             listen="0.0.0.0",
             port=port,
             url_path="webhook",
@@ -73,14 +71,10 @@ async def main() -> None:
             drop_pending_updates=True
         )
         
-        # Держим приложение запущенным
-        await asyncio.Event().wait()
-        
     except Exception as e:
         logger.error(f"Критическая ошибка при запуске бота: {e}", exc_info=True)
         raise
 
 
 if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+    main()
