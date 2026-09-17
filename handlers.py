@@ -1,6 +1,6 @@
 """Обработчики сообщений бота."""
 import logging
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update
 from telegram.ext import ContextTypes
 from config import EXERCISES, KEYBOARDS
 from user_manager import user_manager

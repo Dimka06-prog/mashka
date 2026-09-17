@@ -30,12 +30,6 @@ def setup_handlers(application: Application) -> None:
 async def error_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Обработчик ошибок."""
     logger.error(f"Exception while handling an update: {context.error}", exc_info=context.error)
-    
-    if update and update.message:
-        await update.message.reply_text(
-            "Произошла ошибка. Попробуйте позже.",
-            reply_keyboard_markup=None
-        )
 
 
 def main() -> None:
