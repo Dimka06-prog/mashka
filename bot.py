@@ -1,4 +1,5 @@
 """Основной файл бота с webhook режимом."""
+import asyncio
 import logging
 import os
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
@@ -32,7 +33,7 @@ async def error_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     logger.error(f"Exception while handling an update: {context.error}", exc_info=context.error)
 
 
-def main() -> None:
+async def main() -> None:
     """Главная функция запуска бота."""
     try:
         # Загрузка конфигурации
@@ -56,8 +57,12 @@ def main() -> None:
         logger.info(f"Запуск бота в webhook режиме на порту {port}")
         logger.info(f"Webhook URL: {webhook_url}")
         
-        # Запуск приложения в webhook режиме
-        application.run_webhook(
+        # Инициализация и запуск приложения
+        await application.initialize()
+        await application.start()
+        
+        # Запуск webhook
+        await application.updater.start_webhook(
             listen="0.0.0.0",
             port=port,
             url_path="webhook",
@@ -65,10 +70,13 @@ def main() -> None:
             drop_pending_updates=True
         )
         
+        # Держим приложение запущенным
+        await asyncio.Event().wait()
+        
     except Exception as e:
         logger.error(f"Критическая ошибка при запуске бота: {e}", exc_info=True)
         raise
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
